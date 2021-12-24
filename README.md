@@ -49,7 +49,7 @@ OR
 
 ### Countries Grouped by language
     
-    GET /countries?group=language
+    GET /countries?group=languages
 
 ### Countries Grouped by region
 
