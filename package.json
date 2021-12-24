@@ -16,7 +16,7 @@
   "scripts": {
     "test": "jest",
     "start": "node server.js",
-    "dev": "nodemon server.js",
+    "dev": "nodemon --ext *.js server.js",
     "lint": "eslint ."
   },
   "jest": {
