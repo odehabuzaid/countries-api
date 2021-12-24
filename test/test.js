@@ -3,8 +3,13 @@
 const supertest = require('supertest');
 const mongoose = require("mongoose");
 const fs = require("fs");
+
+const sample = require('../data/structured.json');
+
 const { app } = require('../app')
+
 const { translator, jsonExporter } = require('../utils')
+
 const requestWithSupertest = supertest(app);
 
 beforeEach((done) => {
@@ -12,6 +17,7 @@ beforeEach((done) => {
     mongoose.connect(process.env.ATLAS_CON_STR,
         { useNewUrlParser: true, useUnifiedTopology: true },
         () => done());
+
 });
 
 afterEach((done) => {
@@ -22,12 +28,127 @@ afterEach((done) => {
 
 
 
-describe('Home Endpoint', () => {
+describe('Endpoints', () => {
 
-    it('GET / ', async () => {
+    it('GET /', async () => {
         const res = await requestWithSupertest.get('/');
         expect(res.status).toEqual(200);
 
+    });
+
+    it('GET /countries  - all countries', async () => {
+        await requestWithSupertest.get('/countries').expect(200)
+            .then((response) => {
+
+                expect(Array.isArray(response.body)).toBeTruthy()
+                expect(response.body.length).toEqual(250)
+
+                expect(response.body[0].name.common).toBe(sample[0].name.common)
+                expect(response.body[0].name.official).toBe(sample[0].name.official)
+                expect(response.body[0].codes.cca2).toBe(sample[0].codes.cca2)
+                expect(response.body[0].codes.cca3).toBe(sample[0].codes.cca3)
+                expect(response.body[0].codes.ccn3).toBe(sample[0].codes.ccn3)
+                expect(response.body[0].codes.cca2).toBe(sample[0].codes.cca2)
+            
+            })
+    })
+
+    it('GET /countries  - support search by CCA2', async () => {
+        await requestWithSupertest.get('/countries?code=' + sample[6].codes.cca2).expect(200)
+            .then((response) => {
+
+                expect(Array.isArray(response.body)).toBeTruthy()
+                expect(response.body.length).toEqual(1)
+                expect(response.body[0].name.common).toBe(sample[6].name.common)
+                expect(response.body[0].name.official).toBe(sample[6].name.official)
+                expect(response.body[0].codes.cca2).toBe(sample[6].codes.cca2)
+                expect(response.body[0].codes.cca3).toBe(sample[6].codes.cca3)
+                expect(response.body[0].codes.ccn3).toBe(sample[6].codes.ccn3)
+                expect(response.body[0].codes.cca2).toBe(sample[6].codes.cca2)
+
+            })
+
+
+
+
+    });
+    it('GET /countries  - support search by CCA3', async () => {
+        await requestWithSupertest.get('/countries?code=' + sample[6].codes.cca3).expect(200)
+            .then((response) => {
+
+                expect(Array.isArray(response.body)).toBeTruthy()
+                expect(response.body.length).toEqual(1)
+                expect(response.body[0].name.common).toBe(sample[6].name.common)
+                expect(response.body[0].name.official).toBe(sample[6].name.official)
+                expect(response.body[0].codes.cca2).toBe(sample[6].codes.cca2)
+                expect(response.body[0].codes.cca3).toBe(sample[6].codes.cca3)
+                expect(response.body[0].codes.ccn3).toBe(sample[6].codes.ccn3)
+                expect(response.body[0].codes.cca2).toBe(sample[6].codes.cca2)
+
+            })
+    });
+    it('GET /countries  - support search by CCN3', async () => {
+        await requestWithSupertest.get('/countries?code=' + sample[6].codes.ccn3).expect(200)
+            .then((response) => {
+
+                expect(Array.isArray(response.body)).toBeTruthy()
+                expect(response.body.length).toEqual(1)
+                expect(response.body[0].name.common).toBe(sample[6].name.common)
+                expect(response.body[0].name.official).toBe(sample[6].name.official)
+                expect(response.body[0].codes.cca2).toBe(sample[6].codes.cca2)
+                expect(response.body[0].codes.cca3).toBe(sample[6].codes.cca3)
+                expect(response.body[0].codes.ccn3).toBe(sample[6].codes.ccn3)
+                expect(response.body[0].codes.cca2).toBe(sample[6].codes.cca2)
+
+            })
+    });
+    it('GET /countries  - support Search by country name /common', async () => {
+        await requestWithSupertest.get('/countries?name=' + sample[6].name.common).expect(200)
+            .then((response) => {
+                expect(Array.isArray(response.body)).toBeTruthy()
+                expect(response.body.length).toEqual(1)
+                expect(response.body[0].name.common).toBe(sample[6].name.common)
+                expect(response.body[0].name.official).toBe(sample[6].name.official)
+                expect(response.body[0].codes.cca2).toBe(sample[6].codes.cca2)
+                expect(response.body[0].codes.cca3).toBe(sample[6].codes.cca3)
+                expect(response.body[0].codes.ccn3).toBe(sample[6].codes.ccn3)
+                expect(response.body[0].codes.cca2).toBe(sample[6].codes.cca2)
+
+            })
+
+    });
+
+    it('GET /countries  - support Search by country name /official', async () => {
+        await requestWithSupertest.get('/countries?name=' + sample[6].name.official)
+            .expect(200)
+            .then((response) => {
+                expect(Array.isArray(response.body)).toBeTruthy()
+                expect(response.body.length).toEqual(1)
+                expect(response.body[0].name.common).toBe(sample[6].name.common)
+                expect(response.body[0].name.official).toBe(sample[6].name.official)
+                expect(response.body[0].codes.cca2).toBe(sample[6].codes.cca2)
+                expect(response.body[0].codes.cca3).toBe(sample[6].codes.cca3)
+                expect(response.body[0].codes.ccn3).toBe(sample[6].codes.ccn3)
+                expect(response.body[0].codes.cca2).toBe(sample[6].codes.cca2)
+
+            })
+
+    });
+
+    it('GET /countries  - grouped by region/language', async () => {
+        const res = await requestWithSupertest.get('/countries');
+        expect(res.status).toEqual(200);
+
+    });
+
+    it('GET /currencies  - by CCA2', async () => {
+        await requestWithSupertest.get('/currencies?code=' + sample[6].codes.cca2)
+            .expect(200)
+            .then((response) => {
+                expect(Array.isArray(response.body)).toBeTruthy()
+                expect(response.body.length).toEqual(1)
+                expect(response.body[0]).toEqual(sample[6].currencies)
+            })
     });
 
 });
@@ -51,14 +172,14 @@ describe('Utils', () => {
 
 
 describe('DataBase', () => {
-    const Cities = require('../database/models/cities')
+    const Globe = require('../database/models/countries')
 
-    it('Cities collection contains 250 city', async () => {
-        return Cities.find().then(data => expect(data.length).toEqual(250));
+    it('Countries collection contains 250 city', async () => {
+        return Globe.find().then(data => expect(data.length).toEqual(250));
     });
     it('All docs are structured only with the required fields', async () => {
-        return Cities.find({}, '-_id -__v').then(data => {
-            const sampleDoc = data[0]['_doc']
+        return Globe.find({}, '-_id -__v').then(data => {
+            const sampleDoc = data[6]['_doc']
             const requiredFields = ['name', 'codes', 'languages', 'currencies', 'region', 'latlng']
             expect(Object.keys(sampleDoc)).toEqual(requiredFields)
         });
