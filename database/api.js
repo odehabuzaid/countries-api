@@ -11,8 +11,8 @@ exports.fillTheDataBaseFromTheApi = async () => {
     await axios.get(url)
         .then(response => {
             jsonExporter.exporter(response.data, "countries.json")
-            structuredModel = response.data
-            jsonExporter.exporter(cityModel(structuredModel), "structured.json")
+            structuredModel = cityModel(response.data)
+            jsonExporter.exporter(structuredModel, "structured.json")
             Globe.find({}, '-_id', (err, entity) => {
                 if (entity.length != 0) {
                     console.log(`there is ${entity.length} country in the db`,)
