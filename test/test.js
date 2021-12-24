@@ -48,3 +48,20 @@ describe('Utils', () => {
     });
 
 });
+
+
+describe('DataBase', () => {
+    const Cities = require('../database/models/cities')
+
+    it('Cities collection contains 250 city', async () => {
+        return Cities.find().then(data => expect(data.length).toEqual(250));
+    });
+    it('All docs are structured only with the required fields', async () => {
+        return Cities.find({}, '-_id -__v').then(data => {
+            const sampleDoc = data[0]['_doc']
+            const requiredFields = ['name', 'codes', 'languages', 'currencies', 'region', 'latlng']
+            expect(Object.keys(sampleDoc)).toEqual(requiredFields)
+        });
+    });
+
+});
