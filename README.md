@@ -39,10 +39,7 @@ OR
 
     GET /countries
 [Example](https://countries-task.herokuapp.com/countries)
-### Get all currencies
-    
-    GET /currencies
-[Example](https://countries-task.herokuapp.com/currencies)
+
 ### Get all currencies for a country
     
     GET /currencies?code=CCA2
