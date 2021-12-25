@@ -11,7 +11,7 @@ Controller.countries = async (req, res) => {
       let { code, name, group } = req.query
 
       if (group == 'languages') {
-        const grouped = { languages: { notEntries: [] } }
+        const grouped = { languages: { noEntries: [] } }
         groupByLanguage(data, grouped)
         return res.send(grouped)
       }
@@ -62,8 +62,9 @@ Controller.currencies = async (req, res) => {
 }
 Controller.downloadFile = async (req, res) => {
   if ('x-admin' in req.headers) {
-    
-    res.download('./data/countries.json', (error) => console.log('Error : ', error))
+    res.download('./data/countries.json', (error) =>
+      console.log('Error : ', error)
+    )
   } else {
     res.status(401).send('You are not authorized')
   }
