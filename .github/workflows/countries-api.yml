@@ -1,0 +1,35 @@
+name: countries-api CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [17]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: create env file
+      run: |
+        touch .env
+        echo ATLAS_CON_STR =${{ secrets.ATLAS_CON_STR }} >> .env
+        echo COUNTRIES_API_URL =${{ secrets.COUNTRIES_API_URL }} >> .env
+        echo LOCAL_CON_STR =${{ secrets.LOCAL_CON_STR }} >> .env
+        echo PORT =${{ secrets.PORT }} >> .env
+        
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v2
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    - run: npm ci
+    - run: npm run build --if-present
+    - run: npm test
