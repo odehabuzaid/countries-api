@@ -48,7 +48,7 @@ describe('Endpoints', () => {
         expect(response.body[0].codes.cca2).toBe(sample[0].codes.cca2)
       })
   })
-  
+
   it('GET /countries  - support search by CCA2', async () => {
     await requestWithSupertest
       .get('/countries?code=' + sample[6].codes.cca2)
